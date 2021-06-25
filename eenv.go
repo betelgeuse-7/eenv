@@ -7,16 +7,37 @@ import (
 	"strings"
 )
 
-const ENV = ".env"
+/*
+* Spaces are allowed after both sides of =
+* No value is not allowed.
+* at least 2 characters after = sign.
+*
+* (I could do better but unfotunately golang doesn't support lookbehinds and lookforwards)
+ */
 const envVarRegex = `\w*[\s+]*=([\s+]*\w).+`
 
+/*
+* a struct representing an environment variable
+ */
 type envVar struct {
 	Key   string
 	Value string
 }
 
-// get environment variables from .env file
-func GetEnvVars() ([]envVar, error) {
+/*
+* specify the path to .env file using this struct.
+* and call GetEnvVars method on it.
+ */
+type EnvFileLoc struct {
+	Path string
+}
+
+/*
+* Parse environment variables in the .env file in the current directory.
+* and return all the variables with their keys as a slice of envVars.
+* envVar struct comprises of a Key (string) and a Value (string).
+ */
+func (efl EnvFileLoc) GetEnvVars() ([]envVar, error) {
 	// compile regex
 	regex, err := regexp.Compile(envVarRegex)
 	if err != nil {
@@ -27,7 +48,7 @@ func GetEnvVars() ([]envVar, error) {
 	var result []envVar
 
 	// read .env file
-	envByte, err := os.ReadFile(ENV)
+	envByte, err := os.ReadFile(efl.Path)
 	if err != nil {
 		return []envVar{}, err
 	}
@@ -75,8 +96,8 @@ func makeEnvVarSlice(matches [][]byte, result *[]envVar) error {
 			return err
 		}
 
-		newEnvVar.Key = newEnvVarKey
-		newEnvVar.Value = newEnvVarValue
+		newEnvVar.Key = strings.TrimSpace(newEnvVarKey)
+		newEnvVar.Value = strings.TrimSpace(newEnvVarValue)
 
 		*result = append(*result, newEnvVar)
 	}
