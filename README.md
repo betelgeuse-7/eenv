@@ -14,12 +14,12 @@ I am not such a regex wizard, so...
 
 ---
 
-The package is extremely easy to use (getting env variables was not supposed to be a hard task, right?)
+The package is extremely easy to use
 
 ```go
     package main
 
-    import "github.com/betelgeuse-7/eenv/eenv"
+    import "github.com/betelgeuse-7/eenv"
 
     func main() {
         envVars, err := eenv.GetEnvVars()
