@@ -1,3 +1,6 @@
+/*
+Package eenv provides access to variables in a .env file.
+*/
 package eenv
 
 import (
